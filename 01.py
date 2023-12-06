@@ -14,24 +14,20 @@ def find_first_number(text: str) -> str:
             return char
     return ""
 
-def extract_numbers(text: str) -> str:
-    numbers = {
+def parse_line(text: str, map_strings: bool) -> str:
+    numbers_mapping = {
         "one": "1", "two": "2", "three": "3",
         "four": "4", "five": "5", "six": "6",
         "seven": "7","eight": "8","nine": "9"
     }
     result = ""
-    i = 0
-    while i < len(text):
-        for word, digit in numbers.items():
-            if text[i:].startswith(word):
-                result += digit
-                i += 1
-                break
+    for pos in range(len(text)):
+        if text[pos].isdigit():
+            result += text[pos]
         else:
-            if text[i].isdigit():
-                result += text[i]
-            i += 1
+            for word, digit in numbers_mapping.items():
+                if text[pos:].startswith(word):
+                    result += digit
     return result
 
 
@@ -49,10 +45,11 @@ def main(file_path: str):
         calibration_values_1.append(int(result_1))
         
         # Part 2
-        line_updated = extract_numbers(line)
-        result_2 = find_first_number(line_updated) + find_first_number(line_updated[::-1])
+        parsed_line = parse_line(line, map_strings=True)
+        result_2 = int(parsed_line[0] + parsed_line[-1])
+    
         calibration_values_2.append(int(result_2))
-        print(f"Line {i} : {line} Result : {result_1} Updated line : {line_updated} Updated result : {result_2}")
+        print(f"Line {i} : {line} Result : {result_1} Parsed line : {parsed_line} Updated result : {result_2}")
         
     ans_1 = sum(calibration_values_1)
     ans_2 = sum(calibration_values_2)
